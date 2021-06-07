@@ -1,0 +1,24 @@
+requests
+django==2.2.19
+python-dateutil 
+python-dotenv
+BeautifulSoup4
+
+
+#libraryH3lp API Client
+#https://gitlab.com/libraryh3lp/libraryh3lp-sdk-python/-/tree/master
+lh3api
+
+#stats
+pandas
+#Create MS Excel file 
+#xlrd 
+XlsxWriter
+#openpyxl 
+ 
+#dev
+#django-extensions   
+#django-debug-toolbar   
+
+#Create Word Doc
+#python-docx
