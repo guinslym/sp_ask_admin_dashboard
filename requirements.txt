@@ -16,9 +16,18 @@ pandas
 XlsxWriter
 #openpyxl 
  
-#dev
-#django-extensions   
-#django-debug-toolbar   
+
 
 #Create Word Doc
 #python-docx
+
+#Testing
+pytest
+pytest-watch
+pytest-django
+pytest-sugar
+pytest-cov
+
+#dev
+#django-extensions   
+#django-debug-toolbar   
