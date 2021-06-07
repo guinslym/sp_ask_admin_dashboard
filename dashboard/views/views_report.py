@@ -19,6 +19,17 @@ from datetime import timezone, datetime
 import json
 from os import path
 
+def chord_diagram(request):
+    """
+    client = Client()
+    today = datetime.today()
+    chats = client.chats()
+    chats = chats.list_day(year=2021, month=1, day=1, to="2021-04-11")
+    df = pd.DataFrame(chats)
+    """
+
+    return render(request, 'chord_diagram.html')
+
 def daily_report(request):
     today = datetime.today().strftime('%Y-%m-%d')
 

@@ -12,7 +12,7 @@ Yet Another LibraryH3lp Ask Dashboard
 
 
 ## Installation
-Clone this repository. On your command line, navigate in the location of this local repository, type this:
+Clone this repository. This project requires python3. On your command line, navigate in the location of this local repository, type this:
 
 		pip install -r requirements.txt
 
@@ -37,7 +37,7 @@ In ~/.lh3/credentials::
 
 ## Configuration - Windows
 
-In the current directory, rename **.env-exemple** to **.env**. Add your LibraryH3lp username and password
+In the current directory, rename **env-exemple** to **.env** (there is a dot before the filename). Add your LibraryH3lp username and password
 
         salt=asjdflkajs
         scheme=https

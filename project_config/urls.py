@@ -111,6 +111,7 @@ from dashboard.views.views_report import (
     get_unanswered_chats,
     pivotTableChatAnsweredByOperator,
     daily_report,
+    chord_diagram,
 
 )
 
@@ -120,6 +121,7 @@ urlpatterns += [
     path('unanswered/', get_unanswered_chats, name='get_unanswered_chats'),
     path('pivot/table/chats/by/operator', pivotTableChatAnsweredByOperator, name='pivotTableChatAnsweredByOperator'),
     path('report/daily', daily_report, name='daily_report'),
+    path('charts/chord_diagram', chord_diagram, name='chord_diagram'),
 
 
 ]

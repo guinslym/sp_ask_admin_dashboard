@@ -1,6 +1,5 @@
 .env
 tmp_file/
-static/
 db.sql*
 tasks.todo
 /dashboard/templates/base/external_links.html
@@ -94,6 +93,6 @@ __pycache__/
 local_settings.py
 
 .env
-env*
+env37
 db.sqlite3
 
