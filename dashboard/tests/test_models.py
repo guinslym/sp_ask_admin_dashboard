@@ -24,10 +24,15 @@ ___  ___          _      _
 \_|  |_/\___/ \__,_|\___|_|___/
 MVP model tests --- it's not extensive
 """
+
+from dashboard.models import ReferenceQuestion
+
 class TestModel(TestCase):
 
-    def test_right_instance(self):
-        assert isinstance('obj', str) , 'Should be a string'
+    def test_model_reference_question_content(self):
+        message = "Is the library open?"
+        rq = ReferenceQuestion.objects.create(message=message)
+        assert rq.message == message, 'Should be: Is the library open?'
 
 
 
@@ -41,3 +46,5 @@ ______     _       _   _                 _     _
                                                 | |
                                                 |_|
 """
+
+

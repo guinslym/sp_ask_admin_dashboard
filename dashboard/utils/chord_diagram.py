@@ -6,7 +6,11 @@ import pandas as pd
 import numpy as np
 
 
-
+from dashboard.utils.ask_schools import (
+    find_school_by_queue_or_profile_name,
+    find_school_by_operator_suffix,
+    get_shortname_by_full_school_name
+)
 
 def remove_columns_from_df(df, columns):
     df.drop(columns, axis=1, inplace=True)
@@ -15,21 +19,19 @@ def remove_columns_from_df(df, columns):
 def chord_diagram(year, month, day, to=None):
     client = Client()
     chats = client.chats().list_day(year, month, day, to=to)
-    """
-    chats_this_day = remove_practice_queues(chats)
-    chats_answered = get_chats_answered(chats_this_day)
-    """
+    chats_this_day = [chat for chat in chats if 'practice' not in chat.get('queue')]
+    chats_answered = [chat for chat in chats_this_day if chat.get('accepted') != None ]
     return chats_answered
 
 def prepare_to_dataframe(chats_answered)  :
     df = pd.DataFrame(chats_answered)
     df["guest"] = df['guest'].apply(lambda x:x[0:7])
-    """
+
     df["from"] = df['queue'].apply(lambda x: find_school_by_queue_or_profile_name(x))
     df["to"] = df['operator'].apply(lambda x: find_school_by_operator_suffix(x))
-    df["school"] = df['to'].apply(lambda x: school_name.get(x).get('full') )
+    df["school"] = df['operator'].apply(lambda x: find_school_by_operator_suffix(x))
     df["short"] = df['from'].apply(lambda x: get_shortname_by_full_school_name(x) )
-    """
+
     columns = ['duration','reftracker_id', 'started','operator',
         'reftracker_url','desktracker_id', 'ended', 'queue',
         'desktracker_url','wait', 'profile', 'id',
