@@ -18,7 +18,7 @@ Clone this repository. This project requires python3. On your command line, navi
 
 ## Configuration - Mac OSX and Linux
 
-In ~/.lh3/config::
+Create a file in ~/.lh3/config::
 
         [default]
         server = ca.libraryh3lp.com
@@ -29,7 +29,7 @@ The `salt` is used when generating system-level utility accounts.
 This is not something you do often.  If your `salt` is unique, your
 passwords will be unique.
 
-In ~/.lh3/credentials::
+Create a file in ~/.lh3/credentials with your LH3 credentials (should be an admin user)::
 
         [default]
         username = <ADMIN_USER>
