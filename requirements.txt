@@ -10,7 +10,7 @@ BeautifulSoup4
 lh3api
 
 #stats
-pandas
+pandas==1.1.5
 #Create MS Excel file 
 #xlrd 
 XlsxWriter
@@ -30,4 +30,7 @@ pytest-cov
 
 #dev
 #django-extensions   
-#django-debug-toolbar   
+#django-debug-toolbar 
+
+#docs
+django-sphinxdoc

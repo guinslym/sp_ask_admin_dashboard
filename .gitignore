@@ -3,6 +3,7 @@ tmp_file/
 db.sql*
 tasks.todo
 /dashboard/templates/base/external_links.html
+*.egg*
 
 # Created by https://www.gitignore.io
 
