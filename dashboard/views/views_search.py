@@ -297,7 +297,7 @@ def get_chats_from_yesterday(request, *args, **kwargs):
         ]
     }
     #chats_from_users = client.api().post('v4', '/chat/_search', json = query)
-    chats_from_users, content_range = search_chats(client, query, chat_range=(0, 100))
+    chats_from_users, content_range = search_chats(client, query, chat_range=(0, 350))
     chats = soft_anonimyzation(chats_from_users)
 
     heatmap = [parse(chat.get('started')).replace(tzinfo=timezone.utc).timestamp() for chat in chats]
@@ -368,7 +368,7 @@ def get_chats_from_yesterday_sample_size(request, *args, **kwargs):
             {'started': 'ascending'}
         ]
     }
-    chats_from_users, content_range = search_chats(client, query, chat_range=(0, 100))
+    chats_from_users, content_range = search_chats(client, query, chat_range=(0, 350))
     chats_from_users = random.sample(chats_from_users, int(50*0.20))
     chats = soft_anonimyzation(chats_from_users)
 
