@@ -1,6 +1,6 @@
 from lh3.api import *
 from dashboard.utils.utils import (
-    soft_anonimyzation, operatorview_helper, Chats, retrieve_transcript
+    soft_anonimyzation, operatorview_helper, Chats, retrieve_transcript, search_chats
 )
 from datetime import datetime, timedelta, timezone
 from django.views.generic import TemplateView
@@ -10,6 +10,7 @@ from django.http import Http404
 from django.http import HttpResponse, HttpResponseNotFound
 from pprint import pprint as print
 from django.contrib import messages
+import random
 
 
 from datetime import datetime
@@ -295,7 +296,8 @@ def get_chats_from_yesterday(request, *args, **kwargs):
             {'started': 'ascending'}
         ]
     }
-    chats_from_users = client.api().post('v4', '/chat/_search', json = query)
+    #chats_from_users = client.api().post('v4', '/chat/_search', json = query)
+    chats_from_users, content_range = search_chats(client, query, chat_range=(0, 100))
     chats = soft_anonimyzation(chats_from_users)
 
     heatmap = [parse(chat.get('started')).replace(tzinfo=timezone.utc).timestamp() for chat in chats]
@@ -326,7 +328,8 @@ def get_chats_from_yesterday_from_mentees(request, *args, **kwargs):
             {'started': 'descending'}
         ]
     }
-    chats_from_users = client.api().post('v4', '/chat/_search', json = query)
+    #chats_from_users = client.api().post('v4', '/chat/_search', json = query)
+    chats_from_users, content_range = search_chats(client, query, chat_range=(0, 100))
     chats = soft_anonimyzation(chats_from_users)
     chat_picked_up_by_mentees = list()
     for chat in chats:
@@ -349,6 +352,39 @@ def get_chats_from_yesterday_from_mentees(request, *args, **kwargs):
     return render(request, "results/chats.html", {'object_list':chats, 'heatmap_chats':heatmap_chats,
                 'username':username, "current_year":"Yesterday", "total_chats":len(chats)})
 
+
+
+
+def get_chats_from_yesterday_sample_size(request, *args, **kwargs):
+    client = Client()
+    today = datetime.today()
+    yesterday = today - timedelta(days=1)
+    
+    query = {
+        'query': {
+            'from': yesterday.strftime('%Y-%m-%d')
+        },
+        'sort': [
+            {'started': 'ascending'}
+        ]
+    }
+    chats_from_users, content_range = search_chats(client, query, chat_range=(0, 100))
+    chats_from_users = random.sample(chats_from_users, int(50*0.20))
+    chats = soft_anonimyzation(chats_from_users)
+
+    heatmap = [parse(chat.get('started')).replace(tzinfo=timezone.utc).timestamp() for chat in chats]
+    counter=  {x:heatmap.count(x) for x in heatmap}
+    heatmap_chats = json.dumps(counter)
+    username= "Yesterday"  
+    #filter chats from yesteday only
+    chats = [chat for chat in chats if  yesterday.strftime('%Y-%m-%d') == parse(chat.get('started')).strftime('%Y-%m-%d') ]
+    chats = [Chats(chat) for chat in chats]
+
+    #return JsonResponse(chats, safe=False)
+    if request.is_ajax():
+        return JsonResponse(chats, safe=False)
+    return render(request, "results/chats.html", {'object_list':chats, 'heatmap_chats':heatmap_chats,
+                'username':username, "current_year":"Yesterday", "total_chats":len(chats)})
 
 def get_chat_for_date_range(request, *args, **kwargs):
     start_date = request.GET.get('start_date','')

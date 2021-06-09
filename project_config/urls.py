@@ -83,6 +83,7 @@ from dashboard.views.views_search import (
     search_chats_with_this_guestID,
     SearchGuestResultsView,
     search_chats_within_2_hours,
+    get_chats_from_yesterday_sample_size,
 )
 
 urlpatterns += [
@@ -95,6 +96,7 @@ urlpatterns += [
     path('search/profiles/<str:queue_id>', get_this_profile, name='get_this_profile'),
     path('resultsProfiles/', SearchProfileResultsView.as_view(), name='results_profiles'),
     path('yesterday/', get_chats_from_yesterday, name='get_chats_from_yesterday'),
+    path('yesterday/sample/', get_chats_from_yesterday_sample_size, name='get_chats_from_yesterday_sample_size'),
     path('yesterday/from/mentees/', get_chats_from_yesterday_from_mentees, name='get_chats_from_yesterday_from_mentees'),
     path('chats/daterange/', get_chat_for_date_range, name='get_page_chat_for_date_range',),
     path(route='search/chats/in/date/range/', 
