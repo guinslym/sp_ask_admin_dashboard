@@ -1,5 +1,6 @@
 .env
-tmp_file/
+tmp_file/*xlsx
+tmp_file/*html
 db.sql*
 tasks.todo
 /dashboard/templates/base/external_links.html
