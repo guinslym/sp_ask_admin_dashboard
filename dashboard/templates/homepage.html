@@ -396,10 +396,14 @@
         "pageLength": 10
     });
     } );
+
+
+    Mustache.tags = ['[[', ']]'];
     </script>
                     <script src="{% static 'libs/jquery/jquery.min.js' %}"></script>
                     <script src="{% static 'libs/datatables.net/js/jquery.dataTables.min.js' %}"></script>
                     <script src="{% static 'libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/4.2.0/mustache.min.js" referrerpolicy="no-referrer"></script>
 
                     <script>
 function beep() {
