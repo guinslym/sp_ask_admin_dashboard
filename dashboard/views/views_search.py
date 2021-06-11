@@ -191,19 +191,57 @@ def get_chats_from_this_queue_using_only_the_queue_name(request, *args, **kwargs
     #print(chats)
     chats = [Chats(chat) for chat in chats]
     if request.is_ajax():
-        return JsonResponse({'object_list':chats,
+        return JsonResponse({'object_list':chats, 'get_chat_for_this_year': True,
                     'heatmap_chats':heatmap_chats, 'username':queue_name, 
                     "current_year":current_year, "total_chats":total_chats}, 
                     safe=False)
     return render(request, 'results/chats.html', {
-                    'object_list':chats,
+                    'object_list':chats, 'get_chat_for_this_year': True,
+                    'heatmap_chats':heatmap_chats, 'username':queue_name, 
+                    "current_year":current_year, "total_chats":total_chats})
+
+def get_chats_from_this_queue_for_this_year_using_only_the_queue_name(request, *args, **kwargs):
+    client = Client()
+    queue_name = kwargs.get('queue_name', None)
+    today= datetime.today()
+    
+    print("queue_name: {0}".format(queue_name))
+    query = {
+        'query': {
+            'queue': [queue_name],
+            'from': str(today.year)+"-01-01",
+            'to': str(today.year)+'-12-31'
+        },
+        'sort': [
+            {'started': 'descending'}
+        ]
+    }
+    #breakpoint()
+    queue_chats = client.api().post('v4', '/chat/_search', json = query)
+    chats = soft_anonimyzation(queue_chats)
+    today = datetime.today()
+    current_year = today.year
+    total_chats = len(chats)
+
+    heatmap = [parse(chat.get('started')).replace(tzinfo=timezone.utc).timestamp() for chat in chats]
+    counter=  {x:heatmap.count(x) for x in heatmap}
+    heatmap_chats = json.dumps(counter)  
+    #print(chats)
+    chats = [Chats(chat) for chat in chats]
+    if request.is_ajax():
+        return JsonResponse({'object_list':chats,
+                    'heatmap_chats':heatmap_chats, 'username':queue_name, 
+                    'get_chat_for_this_year': True,
+                    "current_year":current_year, "total_chats":total_chats}, 
+                    safe=False)
+    return render(request, 'results/chats.html', {
+                    'object_list':chats, 'get_chat_for_this_year': True,
                     'heatmap_chats':heatmap_chats, 'username':queue_name, 
                     "current_year":current_year, "total_chats":total_chats})
 
 
-def get_chats_for_this_user(request, *args, **kwargs):
+def get_chats_for_this_user(request, username, information=None):
     client = Client()
-    username = kwargs.get('username', None)
     query = {
         'query': {
             'operator': [username],
@@ -214,7 +252,46 @@ def get_chats_for_this_user(request, *args, **kwargs):
             {'started': 'descending'}
         ]
     }
-    chats_from_users = client.api().post('v4', '/chat/_search', json = query)
+    if information=='full':
+        chats_from_users, content_range = search_chats(client, query, chat_range=(0, 350))
+    else:
+        chats_from_users = client.api().post('v4', '/chat/_search', json = query)
+    chats = soft_anonimyzation(chats_from_users)
+    
+    today = datetime.today()
+    current_year = today.year
+    total_chats = len(chats_from_users)
+
+    assignments = operatorview_helper(username)
+    heatmap = [parse(chat.get('started')).replace(tzinfo=timezone.utc).timestamp() for chat in chats]
+    counter=  {x:heatmap.count(x) for x in heatmap}
+    heatmap_chats = json.dumps(counter)  
+    if request.is_ajax():
+        return JsonResponse({'chats':chats, "assignments":assignments, 
+                            'get_chat_for_this_year': True,
+                            'heatmap_chats':heatmap_chats , 'username':username,
+                             "current_year":current_year, "total_chats":total_chats }, safe=False)
+    chats = [Chats(chat) for chat in chats]
+    return render(request, 'results/chats.html', 
+                    {'object_list':chats, "assignments":assignments, 
+                    'get_chat_for_this_year': True,
+                    'heatmap_chats':heatmap_chats, 'username':username, 
+                    "current_year":current_year, "total_chats":total_chats })
+
+def get_chats_for_this_user_for_this_year(request, username, information=None):
+    client = Client()
+    today = datetime.today()
+    query = {
+        'query': {
+            'operator': [username],
+            'from': str(today.year)+"-01-01",
+            'to': str(today.year)+'-12-31'
+        },
+        'sort': [
+            {'started': 'descending'}
+        ]
+    }
+    chats_from_users, content_range = search_chats(client, query, chat_range=(0, 500))
     chats = soft_anonimyzation(chats_from_users)
     
     today = datetime.today()

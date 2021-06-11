@@ -37,6 +37,11 @@
 
                 <div id="output"></div>
 
+                <br>
+            {{get_chat_for_this_year}}
+                {% if 'get_chat_for_this_year' == 'True'  %}
+                    <a href="{% url 'get_chats_for_this_user_for_this_year' username %}" class="btn btn-primary btn-sm">Get all chats for this year</a>
+                {% endif %}
 
 
             </div>
@@ -62,7 +67,7 @@
                                                     <tr>
                                                         <th>#</th>
                                                         <th>Guest</th>
-                                                        <th>Started</th>
+                                                        <th>Started (YYYY-MM-DD)</th>
                                                         <th>Queue</th>
                                                         <th>Operator</th>
                                                         <th>Ended</th>
@@ -89,7 +94,7 @@
                                                         <td><a href="{% url  'get_chats_from_this_queue_using_only_the_queue_name' value.queue  %}">{{value.queue}}</a>  </td>
                                                         <td>
                                                             {% if value.operator %}
-                                                                <a href="{% url  'get_chats_for_this_user' value.operator  %}">{{value.operator}}</a>
+                                                                <a href="{% url  'get_chats_for_this_user' username=value.operator %}">{{value.operator}}</a>
                                                             {% endif %}
                                                         </td>
 

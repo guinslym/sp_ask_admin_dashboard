@@ -48,9 +48,9 @@ class Chats(object):
         self.started = None
         self.ended = None
         if chat.get('started'):
-            self.started = parse(chat.get('started')) .strftime("%m-%d-%Y  %H:%M:%S")
+            self.started = parse(chat.get('started')) .strftime("%Y-%m-%d %H:%M:%S")
         if chat.get('ended'):
-            self.ended = parse(chat.get('ended')) .strftime("%m-%d-%Y  %H:%M:%S")
+            self.ended = parse(chat.get('ended')) .strftime("%Y-%m-%d %H:%M:%S")
         self.protocol = chat.get('protocol')
         self.school = None
         if chat.get('accepted'):

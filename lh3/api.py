@@ -6,6 +6,10 @@ import hashlib
 import os
 from pathlib import Path
 
+__authors__="libraryh3lp.com; nubgames"
+#Scholars Portal add some modifications
+
+
 from collections import OrderedDict
 
 if os.name == 'nt':

@@ -84,6 +84,7 @@ from dashboard.views.views_search import (
     SearchGuestResultsView,
     search_chats_within_2_hours,
     get_chats_from_yesterday_sample_size,
+    get_chats_for_this_user_for_this_year,
 )
 
 urlpatterns += [
@@ -91,7 +92,8 @@ urlpatterns += [
     path('search/chats/with/this/guestID/', search_chats_with_this_guestID , name='search_chats_with_this_guestID'),
 
     path('search/chats/within/two/hours/<str:chat_id>', search_chats_within_2_hours, name='search_chats_within_2_hours'),
-    path('search/chats/answered/by/this/users/<str:username>', get_chats_for_this_user, name='get_chats_for_this_user'),
+    path('search/chats/answered/by/this/users/<str:username>/', get_chats_for_this_user, name='get_chats_for_this_user',),
+    path('search/chats/answered/this/year/by/this/users/<str:username>/', get_chats_for_this_user_for_this_year, name='get_chats_for_this_user_for_this_year',),
     path('search/queues/<str:queue_name>', get_chats_for_this_queue, name='get_chats_for_this_queue'),
     path('search/profiles/<str:queue_id>', get_this_profile, name='get_this_profile'),
     path('resultsProfiles/', SearchProfileResultsView.as_view(), name='results_profiles'),
@@ -133,6 +135,7 @@ from dashboard.views.views_search import (
     get_chats_for_this_school_using_an_username,
     get_chats_for_this_school_using_this_queue_name,
     get_chats_from_this_queue_using_only_the_queue_name,
+    get_chats_from_this_queue_for_this_year_using_only_the_queue_name,
 )
 
 urlpatterns += [
@@ -142,7 +145,11 @@ urlpatterns += [
         route='search/chats/from/this/queue/using/only/the/queue_name/<str:queue_name>', 
             view=get_chats_from_this_queue_using_only_the_queue_name, 
             name='get_chats_from_this_queue_using_only_the_queue_name',
-            kwargs={"view_filepath":"views.main.report_view.py"}
+        ),
+    path(
+        route='search/chats/from/this/queue/for/this/year/using/only/the/queue_name/<str:queue_name>', 
+            view=get_chats_from_this_queue_for_this_year_using_only_the_queue_name, 
+            name='get_chats_from_this_queue_using_only_the_queue_name',
         ),
 
 ]
