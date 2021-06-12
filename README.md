@@ -55,3 +55,7 @@ open your browser on http://127.0.0.1:8000/
 
 ## Credit
 [LibraryH3lp API](https://gitlab.com/libraryh3lp/libraryh3lp-sdk-python/) -MIT
+
+## Contributors
+ - Amy (LibraryH3lp)
+ - Dan S (Laurentian U)

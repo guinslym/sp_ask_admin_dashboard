@@ -8,7 +8,10 @@ from datetime import datetime
 from bs4 import BeautifulSoup
 from dashboard.utils.ask_schools import find_school_by_queue_or_profile_name
 
-
+from datetime import datetime, time
+from dateutil import tz, parser
+default_date = datetime.combine(datetime.now(),
+                                time(0, tzinfo=tz.gettz("America/New_York")))
 
 
 import re
@@ -48,9 +51,11 @@ class Chats(object):
         self.started = None
         self.ended = None
         if chat.get('started'):
-            self.started = parse(chat.get('started')) .strftime("%Y-%m-%d %H:%M:%S")
+            #self.started = parser.parse(chat.get('started'), default=default_date).strftime("%Y-%m-%d %H:%M:%S")  
+            self.started = parser.parse(chat.get('started'), default=datetime(2017, 10, 13, tzinfo=tz.gettz('America/New_York'))).strftime("%Y-%m-%d %H:%M:%S") 
         if chat.get('ended'):
-            self.ended = parse(chat.get('ended')) .strftime("%Y-%m-%d %H:%M:%S")
+            #self.ended = parser.parse(chat.get('ended'), default=default_date).strftime("%Y-%m-%d %H:%M:%S")
+            self.ended = parser.parse(chat.get('ended'), default=datetime(2017, 10, 13, tzinfo=tz.gettz('America/New_York'))).strftime("%Y-%m-%d %H:%M:%S") 
         self.protocol = chat.get('protocol')
         self.school = None
         if chat.get('accepted'):
