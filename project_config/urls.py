@@ -194,7 +194,6 @@ urlpatterns += [
 from dashboard.views.views_search import (
     get_chats_for_this_school_using_an_username,
     get_chats_for_this_school_using_this_queue_name,
-    get_chats_from_this_queue_using_only_the_queue_name,
     get_chats_from_this_queue_for_this_year_using_only_the_queue_name,
 )
 
@@ -208,11 +207,6 @@ urlpatterns += [
         "search/chats/from/this/school/using/this/queue_name/<str:queue_name>",
         get_chats_for_this_school_using_this_queue_name,
         name="get_chats_for_this_school_using_this_queue_name",
-    ),
-    path(
-        route="search/chats/from/this/queue/using/only/the/queue_name/<str:queue_name>",
-        view=get_chats_from_this_queue_using_only_the_queue_name,
-        name="get_chats_from_this_queue_using_only_the_queue_name",
     ),
     path(
         route="search/chats/from/this/queue/for/this/year/using/only/the/queue_name/<str:queue_name>",

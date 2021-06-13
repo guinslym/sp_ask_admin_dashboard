@@ -51,6 +51,14 @@ get_chats_from_yesterday_from_mentees
 
 
 class SearchProfileResultsView(TemplateView):
+    """[summary]
+
+    Args:
+        TemplateView ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
     template_name = "results/profile.html"
 
     @csrf_exempt
@@ -74,6 +82,14 @@ class SearchProfileResultsView(TemplateView):
 
 
 def get_this_profile(request, *args, **kwargs):
+    """[summary]
+
+    Args:
+        request ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
     queue_id = kwargs.get("queue_id", None)
     queue_id = int(queue_id)
     client = Client()
@@ -112,6 +128,14 @@ def get_this_profile(request, *args, **kwargs):
 
 
 def get_chats_for_this_school_using_an_username(request, *args, **kwargs):
+    """[summary]
+
+    Args:
+        request ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
     client = Client()
     username = kwargs.get("username", None)
     school_name = find_school_by_operator_suffix(username).lower()
@@ -165,6 +189,14 @@ def get_chats_for_this_school_using_an_username(request, *args, **kwargs):
 
 
 def get_chats_for_this_school_using_this_queue_name(request, *args, **kwargs):
+    """[summary]
+
+    Args:
+        request ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
     client = Client()
     queue_name = kwargs.get("queue_name", None)
     school_name = find_school_by_queue_or_profile_name(queue_name)
@@ -219,55 +251,6 @@ def get_chats_for_this_school_using_this_queue_name(request, *args, **kwargs):
     )
 
 
-def get_chats_from_this_queue_using_only_the_queue_name(request, *args, **kwargs):
-    client = Client()
-    queue_name = kwargs.get("queue_name", None)
-
-    print("queue_name: {0}".format(queue_name))
-    query = {
-        "query": {"queue": [queue_name], "from": "2021-01-01", "to": "2021-12-31"},
-        "sort": [{"started": "descending"}],
-    }
-    # breakpoint()
-    queue_chats = client.api().post("v4", "/chat/_search", json=query)
-    chats = soft_anonimyzation(queue_chats)
-    today = datetime.today()
-    current_year = today.year
-    total_chats = len(chats)
-
-    heatmap = [
-        parse(chat.get("started")).replace(tzinfo=timezone.utc).timestamp()
-        for chat in chats
-    ]
-    counter = {x: heatmap.count(x) for x in heatmap}
-    heatmap_chats = json.dumps(counter)
-    # print(chats)
-    chats = [Chats(chat) for chat in chats]
-    if request.is_ajax():
-        return JsonResponse(
-            {
-                "object_list": chats,
-                "get_chat_for_this_year": True,
-                "heatmap_chats": heatmap_chats,
-                "username": queue_name,
-                "current_year": current_year,
-                "total_chats": total_chats,
-            },
-            safe=False,
-        )
-    return render(
-        request,
-        "results/chats.html",
-        {
-            "object_list": chats,
-            "get_chat_for_this_year": True,
-            "heatmap_chats": heatmap_chats,
-            "username": queue_name,
-            "current_year": current_year,
-            "total_chats": total_chats,
-        },
-    )
-
 
 def get_chats_from_this_queue_for_this_year_using_only_the_queue_name(
     request, *args, **kwargs
@@ -276,17 +259,16 @@ def get_chats_from_this_queue_for_this_year_using_only_the_queue_name(
     queue_name = kwargs.get("queue_name", None)
     today = datetime.today()
 
+
     print("queue_name: {0}".format(queue_name))
     query = {
-        "query": {
-            "queue": [queue_name],
-            "from": str(today.year) + "-01-01",
-            "to": str(today.year) + "-12-31",
-        },
+        "query": {"queue": [queue_name], "from": str(today.year)+"-01-01", "to": str(today.year)+"-12-31"},
         "sort": [{"started": "descending"}],
     }
+    queue_chats, content_range = search_chats(
+            client, query, chat_range=(0, 10000)
+        )
     # breakpoint()
-    queue_chats = client.api().post("v4", "/chat/_search", json=query)
     chats = soft_anonimyzation(queue_chats)
     today = datetime.today()
     current_year = today.year
@@ -327,17 +309,30 @@ def get_chats_from_this_queue_for_this_year_using_only_the_queue_name(
 
 
 def get_chats_for_this_user(request, username, information=None):
+    """[summary]
+
+    Args:
+        request ([type]): [description]
+        username ([type]): [description]
+        information ([type], optional): [description]. Defaults to None.
+
+    Returns:
+        [type]: [description]
+    """
     client = Client()
+    today = datetime.today()
     query = {
-        "query": {"operator": [username], "from": "2019-01-01", "to": "2021-12-31"},
+        "query": {"operator": [username], "from": str(today.year)+"-01-01", "to": str(today.year)+"-12-31"},
         "sort": [{"started": "descending"}],
     }
     if information == "full":
         chats_from_users, content_range = search_chats(
-            client, query, chat_range=(0, 350)
+            client, query, chat_range=(0, 1000)
         )
     else:
-        chats_from_users = client.api().post("v4", "/chat/_search", json=query)
+        chats_from_users, content_range = search_chats(
+            client, query, chat_range=(0, 1000)
+        )
     chats = soft_anonimyzation(chats_from_users)
 
     today = datetime.today()
