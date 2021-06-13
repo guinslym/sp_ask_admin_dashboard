@@ -308,7 +308,7 @@ def get_chats_from_this_queue_for_this_year_using_only_the_queue_name(
     )
 
 
-def get_chats_for_this_user(request, username, information=None):
+def get_chats_for_this_user(request, username):
     """[summary]
 
     Args:
@@ -325,13 +325,8 @@ def get_chats_for_this_user(request, username, information=None):
         "query": {"operator": [username], "from": str(today.year)+"-01-01", "to": str(today.year)+"-12-31"},
         "sort": [{"started": "descending"}],
     }
-    if information == "full":
-        chats_from_users, content_range = search_chats(
-            client, query, chat_range=(0, 1000)
-        )
-    else:
-        chats_from_users, content_range = search_chats(
-            client, query, chat_range=(0, 1000)
+    chats_from_users, content_range = search_chats(
+            client, query, chat_range=(0, 10000)
         )
     chats = soft_anonimyzation(chats_from_users)
 

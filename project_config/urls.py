@@ -97,7 +97,6 @@ from dashboard.views.views_search import (
     SearchGuestResultsView,
     search_chats_within_2_hours,
     get_chats_from_yesterday_sample_size,
-    get_chats_for_this_user_for_this_year,
 )
 
 urlpatterns += [
@@ -120,11 +119,6 @@ urlpatterns += [
         "search/chats/answered/by/this/users/<str:username>/",
         get_chats_for_this_user,
         name="get_chats_for_this_user",
-    ),
-    path(
-        "search/chats/answered/this/year/by/this/users/<str:username>/",
-        get_chats_for_this_user_for_this_year,
-        name="get_chats_for_this_user_for_this_year",
     ),
     path(
         "search/queues/<str:queue_name>",
