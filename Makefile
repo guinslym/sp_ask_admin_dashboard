@@ -9,6 +9,10 @@ admin:
 	@echo 'will create a new tab on the browser and go to the django admin url'
 	chromium http://127.0.0.1:8000/admin/login/?next=/admin/
 
+open:
+	@echo 'will open this Git repo URL on your default browser'
+	open https://github.com/guinslym/sp_ask_admin_dashboard
+
 git_alias:
 	#git config --global alias.st status
 	@echo "This will change your git alias. it's better for you to run it yourself"
@@ -27,7 +31,6 @@ tfrontend:
 	@echo 'Runing pytest-watch ptw -v -c --ext=.py'
 	py.test -v  applications/startupconfort/tests/test_frontend.py
 
-
 test:
 	@echo 'Runing py.test -v'
 	py.test applications/
@@ -45,3 +48,11 @@ test_failed_first:
 	@echo "all tests will be executed, but re-ordered based on whether they've failed in the previous run or not. Failures first, successful tests after."
 	@echo "Traceback: only one line per failure"
 	py.test --ff --tb=line  -v
+
+poetry-runserver:
+	@echo 'Runing poetry run python manage.py runserver '
+	poetry run python manage.py runserver 
+
+poetry-migrate:
+	@echo 'Runing poetry run python manage.py migrate '
+	poetry run python manage.py migrate 

@@ -21,6 +21,9 @@ XlsxWriter
 #Create Word Doc
 #python-docx
 
+#lint
+black
+
 #Testing
 pytest
 pytest-watch
@@ -29,7 +32,7 @@ pytest-sugar
 pytest-cov
 
 #dev
-#django-extensions   
+django-extensions   
 #django-debug-toolbar 
 
 #docs

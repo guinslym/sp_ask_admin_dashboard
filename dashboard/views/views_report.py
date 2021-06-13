@@ -1,10 +1,8 @@
 from django.http.response import JsonResponse
 from lh3.api import *
-from dashboard.utils.utils import (
-    soft_anonimyzation, Chats
-)
+from dashboard.utils.utils import soft_anonimyzation, Chats
 from datetime import datetime, timedelta
-from django.shortcuts import render 
+from django.shortcuts import render
 from dateutil.parser import parse
 
 from dashboard.utils.daily_report import real_report
@@ -14,10 +12,58 @@ import pathlib
 from project_config.settings import BASE_DIR
 from django.http import FileResponse
 import pandas as pd
-import json 
+import json
 from datetime import timezone, datetime
 import json
 from os import path
+from pprint import pprint as print
+
+from datetime import datetime, timedelta
+import lh3.api
+
+
+def download_in_xslx_report__for_queuesfor_last_week(request):
+    # https://gitlab.com/libraryh3lp/libraryh3lp-sdk-python/-/blob/master/examples/scheduled-reports.py
+    today = datetime.today()
+
+    client = lh3.api.Client()
+    chats_per_operator = client.reports().chats_per_queue(
+        start="2021-01-01", end="2021-12-31"
+    )
+
+    print(chats_per_operator)
+
+
+def download_in_xslx_report_for_last_week(request):
+    # https://gitlab.com/libraryh3lp/libraryh3lp-sdk-python/-/blob/master/examples/scheduled-reports.py
+    today = datetime.today()
+    monday = today - timedelta(days=today.weekday())
+    last_monday = (monday - timedelta(days=7)).strftime("%Y-%m-%d")
+    last_sunday = (monday - timedelta(days=1)).strftime("%Y-%m-%d")
+
+    client = lh3.api.Client()
+    chats_per_operator = client.reports().chats_per_operator(
+        start=last_monday, end=last_sunday
+    )
+
+    chats_per_operator = chats_per_operator.split("\r\n")
+    chats_per_operator = chats_per_operator[1::]
+    report = list()
+    for data in chats_per_operator:
+        if len(data) > 0:
+            data = data.split(",")
+            report.append(
+                {
+                    "operator": data[0],
+                    "n": data[1],
+                    "mean": data[2],
+                    "median": data[3],
+                    "min": data[4],
+                    "max": data[5],
+                }
+            )
+    print(report)
+
 
 def chord_diagram(request):
     """
@@ -28,67 +74,67 @@ def chord_diagram(request):
     df = pd.DataFrame(chats)
     """
 
-    return render(request, 'chord_diagram.html')
+    return render(request, "chord_diagram.html")
+
 
 def daily_report(request):
-    today = datetime.today().strftime('%Y-%m-%d')
+    today = datetime.today().strftime("%Y-%m-%d")
 
     filename = "daily-" + today + ".xlsx"
     filepath = str(pathlib.PurePath(BASE_DIR, "tmp_file", filename))
-    
+
     df = real_report()
-    #Create file using the UTILS functions
+    # Create file using the UTILS functions
     df.to_excel(filepath, index=False)
 
-    #TODO: Create this report using a cronjob
-    return FileResponse(open(filepath, 'rb'), as_attachment=True, filename=filename)
+    # TODO: Create this report using a cronjob
+    return FileResponse(open(filepath, "rb"), as_attachment=True, filename=filename)
 
 
 def pivotTableOperatorAssignment(request):
     assignments = helper_for_operator_assignments()
-    
-    context = {
-        'schools': assignments
-    }
+
+    context = {"schools": assignments}
 
     df = pd.DataFrame(assignments)
-    df['operator_copy'] = df['operator']
+    df["operator_copy"] = df["operator"]
 
     filename = "operator.xlsx"
     filepath = str(pathlib.PurePath(BASE_DIR, "tmp_file", filename))
 
-    writer = pd.ExcelWriter(filepath, engine='xlsxwriter')
+    writer = pd.ExcelWriter(filepath, engine="xlsxwriter")
     df.to_excel(writer, index=False)
-    writer.save() 
+    writer.save()
 
-    #return JsonResponse(context, safe=False)
-    return render(request, 'pivot.html', context)
+    # return JsonResponse(context, safe=False)
+    return render(request, "pivot.html", context)
 
 
 def download_excel_file_Operator_Assignment(request):
-    
+
     filename = "operator.xlsx"
     filepath = str(pathlib.PurePath(BASE_DIR, "tmp_file", filename))
-    
+
     from os import path
+
     if path.exists(filepath):
-        print('file exist in : ' + filepath)
-        return FileResponse(open(filepath, 'rb'), as_attachment=True, filename=filename)
+        print("file exist in : " + filepath)
+        return FileResponse(open(filepath, "rb"), as_attachment=True, filename=filename)
     else:
         assignments = helper_for_operator_assignments()
 
         df = pd.DataFrame(assignments)
-        df['operator_copy'] = df['operator']
+        df["operator_copy"] = df["operator"]
 
         filename = "operator.xlsx"
         filepath = str(pathlib.PurePath(BASE_DIR, "tmp_file", filename))
 
-        writer = pd.ExcelWriter(filepath, engine='xlsxwriter')
+        writer = pd.ExcelWriter(filepath, engine="xlsxwriter")
         df.to_excel(writer, index=False)
-        writer.save() 
+        writer.save()
 
-    #TODO: Create this report using a cronjob
-    return FileResponse(open(filepath, 'rb'), as_attachment=True, filename=filename)
+    # TODO: Create this report using a cronjob
+    return FileResponse(open(filepath, "rb"), as_attachment=True, filename=filename)
 
 
 def get_unanswered_chats(request, *args, **kwargs):
@@ -97,23 +143,42 @@ def get_unanswered_chats(request, *args, **kwargs):
     chats = client.chats()
     last10days = today - timedelta(days=10)
 
-    to_date = str(last10days.year) + "-" + '{:02d}'.format(last10days.month)  + "-" + str(last10days.day)
-    all_chats = chats.list_day(year=today.year, month=today.month, day=today.day, to=to_date)
-    unanswered=list()
+    to_date = (
+        str(last10days.year)
+        + "-"
+        + "{:02d}".format(last10days.month)
+        + "-"
+        + str(last10days.day)
+    )
+    all_chats = chats.list_day(
+        year=today.year, month=today.month, day=today.day, to=to_date
+    )
+    unanswered = list()
     for chat in all_chats:
-        if chat.get('operator')== None:
+        if chat.get("operator") == None:
             unanswered.append(chat)
 
-    #return JsonResponse(chats, safe=False)
-    heatmap = [parse(chat.get('started')).replace(tzinfo=timezone.utc).timestamp() for chat in unanswered]
-    counter=  {x:heatmap.count(x) for x in heatmap}
+    # return JsonResponse(chats, safe=False)
+    heatmap = [
+        parse(chat.get("started")).replace(tzinfo=timezone.utc).timestamp()
+        for chat in unanswered
+    ]
+    counter = {x: heatmap.count(x) for x in heatmap}
     heatmap_chats = json.dumps(counter)
-    username= "Unanswered"  
-    current_year = 'Last 10 days'
+    username = "Unanswered"
+    current_year = "Last 10 days"
 
     unanswered = [Chats(chat) for chat in unanswered]
-    return render(request, "results/chats.html", {'object_list':unanswered, 
-        'heatmap_chats':heatmap_chats, 'username':username, 'current_year':current_year})
+    return render(
+        request,
+        "results/chats.html",
+        {
+            "object_list": unanswered,
+            "heatmap_chats": heatmap_chats,
+            "username": username,
+            "current_year": current_year,
+        },
+    )
 
 
 def pivotTableChatAnsweredByOperator(request):
@@ -126,14 +191,19 @@ def pivotTableChatAnsweredByOperator(request):
     chats = client.chats().list_day(year=2021, month=4, day=1, to="2021-05-18")[0:200]
     chats_initital = [Chats(chat) for chat in chats]
 
-    chats_initital = [{'queue': s.queue, 'school': s.school, 'year': parse(s.started).year, 'month': parse(s.started).strftime('%B'), 'operator': s.operator } for s in chats_initital]
-    
-    breakpoint()
-    operators = [chat.get('operator') for chat in chats_initital]
-    queues = [chat.get('queue') for chat in chats]
-    context = {
-        'schools': chats_initital
-        
-    }
-    return render(request, 'pivot.html', context)
+    chats_initital = [
+        {
+            "queue": s.queue,
+            "school": s.school,
+            "year": parse(s.started).year,
+            "month": parse(s.started).strftime("%B"),
+            "operator": s.operator,
+        }
+        for s in chats_initital
+    ]
 
+    breakpoint()
+    operators = [chat.get("operator") for chat in chats_initital]
+    queues = [chat.get("queue") for chat in chats]
+    context = {"schools": chats_initital}
+    return render(request, "pivot.html", context)

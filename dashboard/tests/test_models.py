@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
 
-#Fixture package
+# Fixture package
 
-#Test package & Utils
+# Test package & Utils
 from django.test import TestCase
 import pytest
+
 pytestmark = pytest.mark.django_db
 
-#models
+# models
 from django.contrib.auth.models import User
 
 
@@ -27,13 +28,12 @@ MVP model tests --- it's not extensive
 
 from dashboard.models import ReferenceQuestion
 
-class TestModel(TestCase):
 
+class TestModel(TestCase):
     def test_model_reference_question_content(self):
         message = "Is the library open?"
         rq = ReferenceQuestion.objects.create(message=message)
-        assert rq.message == message, 'Should be: Is the library open?'
-
+        assert rq.message == message, "Should be: Is the library open?"
 
 
 """
@@ -46,5 +46,3 @@ ______     _       _   _                 _     _
                                                 | |
                                                 |_|
 """
-
-

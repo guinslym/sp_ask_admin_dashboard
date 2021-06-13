@@ -6,31 +6,44 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0001_initial'),
+        ("dashboard", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='ReferenceQuestion',
+            name="ReferenceQuestion",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('anonymized_message', models.TextField(blank=True, null=True)),
-                ('lh3ChatID', models.PositiveIntegerField(blank=True, null=True)),
-                ('chat_date', models.DateTimeField(blank=True, null=True)),
-                ('reference_question_line_number', models.PositiveIntegerField(blank=True, default=0, null=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("anonymized_message", models.TextField(blank=True, null=True)),
+                ("lh3ChatID", models.PositiveIntegerField(blank=True, null=True)),
+                ("chat_date", models.DateTimeField(blank=True, null=True)),
+                (
+                    "reference_question_line_number",
+                    models.PositiveIntegerField(blank=True, default=0, null=True),
+                ),
             ],
             options={
-                'ordering': ('-id',),
+                "ordering": ("-id",),
             },
         ),
         migrations.DeleteModel(
-            name='ReportFrontPage',
+            name="ReportFrontPage",
         ),
         migrations.DeleteModel(
-            name='Transcript',
+            name="Transcript",
         ),
         migrations.AddIndex(
-            model_name='referencequestion',
-            index=models.Index(fields=['lh3ChatID'], name='dashboard_r_lh3Chat_8c063b_idx'),
+            model_name="referencequestion",
+            index=models.Index(
+                fields=["lh3ChatID"], name="dashboard_r_lh3Chat_8c063b_idx"
+            ),
         ),
     ]
