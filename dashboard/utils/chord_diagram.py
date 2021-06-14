@@ -33,7 +33,12 @@ def prepare_to_dataframe(chats_answered):
     df["from"] = df["queue"].apply(lambda x: find_school_by_queue_or_profile_name(x))
     df["to"] = df["operator"].apply(lambda x: find_school_by_operator_suffix(x))
     df["school"] = df["operator"].apply(lambda x: find_school_by_operator_suffix(x))
-    df["short"] = df["from"].apply(lambda x: get_shortname_by_full_school_name(x))
+
+    breakpoint()
+
+    
+
+    df["short"] = df["from"].apply(lambda x: find_school_by_queue_or_profile_name(x))
 
     columns = [
         "duration",
@@ -43,7 +48,6 @@ def prepare_to_dataframe(chats_answered):
         "reftracker_url",
         "desktracker_id",
         "ended",
-        "queue",
         "desktracker_url",
         "wait",
         "profile",
@@ -54,7 +58,11 @@ def prepare_to_dataframe(chats_answered):
         "protocol",
     ]
     df = remove_columns_from_df(df, columns)
+    
+
+    
     del df["from"]
+
     df.rename({"short": "from"}, axis=1, inplace=True)
     columns = ["guest", "from", "to"]
     df = df[columns]

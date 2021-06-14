@@ -282,7 +282,6 @@ def get_shortname_by_full_school_name(school):
     for item in sp_ask_school_dict:
         if school == item.get("school").get("full_name"):
             return item.get("school").get("short_name")
-    return "Unknown"
 
 
 def find_school_by_queue_or_profile_name(queue):
