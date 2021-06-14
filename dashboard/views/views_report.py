@@ -34,15 +34,9 @@ def download_in_xslx_report__for_queues_for_this_year(request):
     print(chats_per_operator)
 
 
-<<<<<<< HEAD
-def download_report_for_operator_for_this_year(request):
-    # https://gitlab.com/libraryh3lp/libraryh3lp-sdk-python/-/blob/master/examples/scheduled-reports.py
-    today = datetime.today().strftime("%Y-%m-%d")
-=======
 def download_in_xslx_report_for_this_year(request):
     # https://gitlab.com/libraryh3lp/libraryh3lp-sdk-python/-/blob/master/examples/scheduled-reports.py
     today = datetime.today()
->>>>>>> 88705a023475d62e3644228c548e50cea5bf0c6b
 
     client = lh3.api.Client()
     this_year = str(today.year)
@@ -60,10 +54,10 @@ def download_in_xslx_report_for_this_year(request):
                 {
                     "operator": data[0],
                     "Total chat answered": data[1],
-                    "mean": data[2],
-                    "median": data[3],
-                    "min": data[4],
-                    "max": data[5],
+                    "Mean - of wait time (sec.)": data[2],
+                    "Median - of wait time (sec.)": data[3],
+                    "Min - of wait time (sec.)": data[4],
+                    "Max - of wait time (sec.)": data[5],
                 }
             )
 
