@@ -22,7 +22,7 @@ from datetime import datetime, timedelta
 import lh3.api
 
 
-def download_in_xslx_report__for_queuesfor_last_week(request):
+def download_in_xslx_report__for_queues_for_this_year(request):
     # https://gitlab.com/libraryh3lp/libraryh3lp-sdk-python/-/blob/master/examples/scheduled-reports.py
     today = datetime.today()
 
@@ -34,13 +34,20 @@ def download_in_xslx_report__for_queuesfor_last_week(request):
     print(chats_per_operator)
 
 
+<<<<<<< HEAD
 def download_report_for_operator_for_this_year(request):
     # https://gitlab.com/libraryh3lp/libraryh3lp-sdk-python/-/blob/master/examples/scheduled-reports.py
     today = datetime.today().strftime("%Y-%m-%d")
+=======
+def download_in_xslx_report_for_this_year(request):
+    # https://gitlab.com/libraryh3lp/libraryh3lp-sdk-python/-/blob/master/examples/scheduled-reports.py
+    today = datetime.today()
+>>>>>>> 88705a023475d62e3644228c548e50cea5bf0c6b
 
     client = lh3.api.Client()
+    this_year = str(today.year)
     chats_per_operator = client.reports().chats_per_operator(
-        start="2021-01-01", end="2021-12-31"
+       start=this_year+"-01-01", end=this_year+"-12-31"
     )
 
     chats_per_operator = chats_per_operator.split("\r\n")
@@ -52,21 +59,25 @@ def download_report_for_operator_for_this_year(request):
             report.append(
                 {
                     "operator": data[0],
-                    "Total chats answered": data[1],
+                    "Total chat answered": data[1],
                     "mean": data[2],
                     "median": data[3],
                     "min": data[4],
                     "max": data[5],
                 }
             )
+
+    today = datetime.today().strftime("%Y-%m-%d")
     filename = "report-" + today + ".xlsx"
     filepath = str(pathlib.PurePath(BASE_DIR, "tmp_file", filename))
 
     df = pd.DataFrame(report)
     # Create file using the UTILS functions
-    df.to_excel(filepath, index=False)
+    df.to_excel(filepath, index=False, sheet_name=this_year+"_report_for_operator")
 
+    # TODO: Create this report using a cronjob
     return FileResponse(open(filepath, "rb"), as_attachment=True, filename=filename)
+
 
 
 def chord_diagram(request):
