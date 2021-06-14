@@ -161,9 +161,15 @@ from dashboard.views.views_report import (
     pivotTableChatAnsweredByOperator,
     daily_report,
     chord_diagram,
+    download_in_xslx_report_for_this_year,
 )
 
 urlpatterns += [
+    path(
+        "download/operator/report/for/this/year",
+        download_in_xslx_report_for_this_year,
+        name="download_in_xslx_report_for_this_year",
+    ),
     path(
         "report/operator/assignment",
         pivotTableOperatorAssignment,

@@ -22,7 +22,7 @@ from datetime import datetime, timedelta
 import lh3.api
 
 
-def download_in_xslx_report__for_queuesfor_last_week(request):
+def download_in_xslx_report__for_queues_for_this_year(request):
     # https://gitlab.com/libraryh3lp/libraryh3lp-sdk-python/-/blob/master/examples/scheduled-reports.py
     today = datetime.today()
 
@@ -34,16 +34,14 @@ def download_in_xslx_report__for_queuesfor_last_week(request):
     print(chats_per_operator)
 
 
-def download_in_xslx_report_for_last_week(request):
+def download_in_xslx_report_for_this_year(request):
     # https://gitlab.com/libraryh3lp/libraryh3lp-sdk-python/-/blob/master/examples/scheduled-reports.py
     today = datetime.today()
-    monday = today - timedelta(days=today.weekday())
-    last_monday = (monday - timedelta(days=7)).strftime("%Y-%m-%d")
-    last_sunday = (monday - timedelta(days=1)).strftime("%Y-%m-%d")
 
     client = lh3.api.Client()
+    this_year = str(today.year)
     chats_per_operator = client.reports().chats_per_operator(
-        start=last_monday, end=last_sunday
+       start=this_year+"-01-01", end=this_year+"-12-31"
     )
 
     chats_per_operator = chats_per_operator.split("\r\n")
@@ -55,14 +53,25 @@ def download_in_xslx_report_for_last_week(request):
             report.append(
                 {
                     "operator": data[0],
-                    "n": data[1],
+                    "Total chat answered": data[1],
                     "mean": data[2],
                     "median": data[3],
                     "min": data[4],
                     "max": data[5],
                 }
             )
-    print(report)
+
+    today = datetime.today().strftime("%Y-%m-%d")
+    filename = "report-" + today + ".xlsx"
+    filepath = str(pathlib.PurePath(BASE_DIR, "tmp_file", filename))
+
+    df = pd.DataFrame(report)
+    # Create file using the UTILS functions
+    df.to_excel(filepath, index=False, sheet_name=this_year+"_report_for_operator")
+
+    # TODO: Create this report using a cronjob
+    return FileResponse(open(filepath, "rb"), as_attachment=True, filename=filename)
+
 
 
 def chord_diagram(request):
