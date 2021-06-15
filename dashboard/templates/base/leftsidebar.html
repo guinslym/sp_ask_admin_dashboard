@@ -22,17 +22,12 @@
                         <span>Report </span>
                     </a> 
                     <ul class="sub-menu" aria-expanded="false">
-                        <!-- 
-                        <li><a href=""><i class="ri-file-excel-line"></i>Monthly Daily Report</a></li>
-                        -->
                         <li><a href="{% url 'get_unanswered_chats' %}" onclick="myFunction('Note: This data can take up to 2 min to generate')">Unanswered Chats</a></li>
                         <li><a href="{% url 'daily_report' %}"  onclick="myFunction('Note: The Daily Report can take up to 2 min to generate')"><i class="ri-timer-line"></i>Daily Report</a></li>
-                        <!-- 
                         <li><a href="{% url 'pivotTableOperatorAssignment' %}" onclick="myFunction('Note: This Pivot Table can take up to 2 min to generate')"><i class="ri-timer-line"></i>Operator Assignments</a></li>
-                        -->
                         <li><a href="{% url 'download_excel_file_Operator_Assignment' %}"  onclick="myFunction('Note: The Report can take up to 2 min to generate')"><i class="ri-download-line"></i>Download Operator Assignments</a></li>
                         <li><a href="{% url 'chord_diagram' %}"><i class="ri-file-chart-line"></i>Chord Diagram</a></li>
-                        <li><a href="{% url 'download_in_xslx_report_for_this_year' %}"><i class="ri-file-chart-line"></i>Operator report for this year</a></li>
+                        <li><a href="{% url 'download_in_xslx_report_for_this_year' %}"><i class="ri-download-line"></i>Operator report for this year</a></li>
                         <script>
                             function myFunction(msg) {
                               alert(msg);
