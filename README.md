@@ -14,7 +14,7 @@ Yet Another LibraryH3lp Ask Dashboard
 ## Installation
 Clone this repository. This project requires python3. On your command line, navigate in the location of this local repository, type this:
 
-		pip install -r requirements.txt
+	pip install -r requirements.txt
 
 ## Configuration - Mac OSX and Linux
 

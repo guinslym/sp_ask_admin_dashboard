@@ -2,7 +2,6 @@ salt=asjdflkajs
 scheme=https
 server=ca.libraryh3lp.com
 timezone=America/Toronto
-
-[default]
-username=test_sp
-password=splh3testing
+version=v2
+username=
+password=
