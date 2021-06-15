@@ -97,4 +97,6 @@ local_settings.py
 .env
 env37
 db.sqlite3
+poetry.lock
+./poetry.lock
 

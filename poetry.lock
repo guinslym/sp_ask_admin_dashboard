@@ -221,17 +221,6 @@ Django = ">=2.0"
 django-haystack = ">=2.8.0"
 
 [[package]]
-category = "main"
-description = "django-taggit is a reusable Django application for simple tagging."
-name = "django-taggit"
-optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-version = "0.23.0"
-
-[package.dependencies]
-Django = ">=1.11"
-
-[[package]]
 category = "dev"
 description = "Pythonic argument parser, that will make you smile"
 name = "docopt"
@@ -820,14 +809,6 @@ python-versions = ">=3.5"
 version = "0.4.1"
 
 [[package]]
-category = "main"
-description = "django-taggit + selectize.js"
-name = "taggit-selectize"
-optional = false
-python-versions = "*"
-version = "2.6.0"
-
-[[package]]
 category = "dev"
 description = "ANSII Color formatting for output in terminal."
 name = "termcolor"
@@ -929,8 +910,7 @@ docs = ["sphinx", "jaraco.packaging (>=8.2)", "rst.linker (>=1.9)"]
 testing = ["pytest (>=4.6)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pytest-cov", "pytest-enabler", "jaraco.itertools", "func-timeout", "pytest-black (>=0.3.7)", "pytest-mypy"]
 
 [metadata]
-content-hash = "2b86c00d8bc7b9fe38cb0dc3109a2c6303172afdd79cd3f8ca1b2e0c3584fe0a"
-lock-version = "1.0"
+content-hash = "4636390bc81965cca2cdc5030c53cc5dbf91c8a3c17833b7e68c5407de0411c0"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -1059,10 +1039,6 @@ django-haystack = [
 django-sphinxdoc = [
     {file = "django-sphinxdoc-2.0.0.tar.gz", hash = "sha256:f2840cbe7186acec4558fbeb2a6d7dfb64d25b9784e6840fadd32e1ccf1f9e37"},
     {file = "django_sphinxdoc-2.0.0-py2.py3-none-any.whl", hash = "sha256:ac0ab76366e66e9ce7e46eaccb2f91b386d9c0da53c9ab15e802352c76e6747b"},
-]
-django-taggit = [
-    {file = "django-taggit-0.23.0.tar.gz", hash = "sha256:a21cbe7e0879f1364eef1c88a2eda89d593bf000ebf51c3f00423c6927075dce"},
-    {file = "django_taggit-0.23.0-py2.py3-none-any.whl", hash = "sha256:db4430ec99265341e05d0274edb0279163bd74357241f7b4d9274bdcb3338b17"},
 ]
 docopt = [
     {file = "docopt-0.6.2.tar.gz", hash = "sha256:49b3a825280bd66b3aa83585ef59c4a8c82f2c8a522dbe754a8bc8d08c85c491"},
@@ -1370,10 +1346,6 @@ sphinxcontrib-serializinghtml = [
 sqlparse = [
     {file = "sqlparse-0.4.1-py3-none-any.whl", hash = "sha256:017cde379adbd6a1f15a61873f43e8274179378e95ef3fede90b5aa64d304ed0"},
     {file = "sqlparse-0.4.1.tar.gz", hash = "sha256:0f91fd2e829c44362cbcfab3e9ae12e22badaa8a29ad5ff599f9ec109f0454e8"},
-]
-taggit-selectize = [
-    {file = "taggit-selectize-2.6.0.tar.gz", hash = "sha256:48aeb7f0884171a5d526ed27c9ffb3fc211ece01622d12e2c5725cfee7ba7f94"},
-    {file = "taggit_selectize-2.6.0-py2.py3-none-any.whl", hash = "sha256:5630ab6964e8cc92e98e187deb7ae22c6033535179d0a4289ad437228339e644"},
 ]
 termcolor = [
     {file = "termcolor-1.1.0.tar.gz", hash = "sha256:1d6d69ce66211143803fbc56652b41d73b4a400a2891d7bf7a1cdf4c02de613b"},
