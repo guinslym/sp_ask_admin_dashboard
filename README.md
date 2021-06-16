@@ -59,3 +59,6 @@ open your browser on http://127.0.0.1:8000/
 ## Contributors
  - Amy (LibraryH3lp)
  - Dan S (Laurentian U)
+ - Aleksandra (Carleton)
+ - Bart K (Scholars-Portal)
+ - Sabina P (Scholars-Portal)
