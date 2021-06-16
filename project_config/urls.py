@@ -219,6 +219,8 @@ urlpatterns += [
 from dashboard.views.views_transcript import (
     get_transcript,
     download_transcript_in_html,
+    search_transcript_with_this_keyword,
+    search_transcript_that_was_transferred,
 )
 
 urlpatterns += [
@@ -226,6 +228,16 @@ urlpatterns += [
         "search/chat/transcript/<int:chat_id>",
         get_transcript,
         name="get_chat_transcript",
+    ),
+    path(
+        "search/transcripts/that/was/transferred/",
+        search_transcript_that_was_transferred,
+        name="search_transcript_that_was_transferred",
+    ),
+    path(
+        "search/transcripts/containing/this/keyword/",
+        search_transcript_with_this_keyword,
+        name="search_transcript_with_this_keyword",
     ),
     path(
         "download/this/transcript/<int:chat_id>",

@@ -711,6 +711,5 @@ def search_chats_with_this_guestID(request, *args, **kwargs):
         )
     return render(request, "results/search_guest.html", {"object_list": None})
 
-
 class SearchGuestResultsView(TemplateView):
     template_name = "results/search_guest.html"

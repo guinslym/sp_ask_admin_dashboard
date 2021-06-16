@@ -11,7 +11,14 @@ from django.core.files.base import ContentFile
 from os import path
 import pathlib
 from project_config.settings import BASE_DIR
+from django.views.decorators.csrf import csrf_exempt
 
+from dashboard.utils.utils import (
+    soft_anonimyzation,
+    Chats,
+    retrieve_transcript,
+    search_chats,
+)
 
 def get_transcript(request, *args, **kwargs):
     client = Client()
@@ -64,3 +71,49 @@ def download_transcript_in_html(request, *args, **kwargs):
         file.write(" ".join(content))
 
     return FileResponse(open(filepath, "rb"), as_attachment=True, filename=filename)
+
+
+@csrf_exempt
+def search_transcript_with_this_keyword(request, *args, **kwargs):
+    in_transcript = request.POST.get("in_transcript", None)
+    chats = None
+    if in_transcript:
+        query = {
+            "query": {
+                "transcript": [in_transcript],
+            },
+            "sort": [{"started": "descending"}],
+        }
+        client = Client()
+        chats, content_range = search_chats(
+            client, query, chat_range=(0, 100)
+        )
+        chats = soft_anonimyzation(chats)
+        chats = [Chats(chat) for chat in chats]
+        return render(
+            request,
+            "results/search_in_transcript.html",
+            {"object_list": chats, "guest_id": "fake GuestID"},
+        )
+    return render(request, "results/search_in_transcript.html", {"object_list": None})
+
+
+@csrf_exempt
+def search_transcript_that_was_transferred(request, *args, **kwargs):
+    query = {
+        "query": {
+            "transcript": ['System message: transferring'],
+        },
+        "sort": [{"started": "descending"}],
+    }
+    client = Client()
+    chats, content_range = search_chats(
+            client, query, chat_range=(0, 100)
+        )
+    chats = soft_anonimyzation(chats)
+    chats = [Chats(chat) for chat in chats]
+    return render(
+        request,
+        "results/search_in_transcript.html",
+        {"object_list": chats, "guest_id": "fake GuestID"},
+    )
