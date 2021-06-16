@@ -649,13 +649,19 @@ def get_chat_for_date_range(request, *args, **kwargs):
         chats = [Chats(chat) for chat in all_chats]
         selected_chats = list()
         for chat in chats:
-            if (parse(chat.started) >= start_date_with_time) and (
-                parse(chat.ended) <= end_date_with_time
-            ):
-                selected_chats.append(chat)
+            if (parse(chat.started) >= start_date_with_time):
+                try:
+                    if (parse(chat.ended) <= end_date_with_time):
+                        selected_chats.append(chat)
+                except:
+                    selected_chats.append(chat)
         return render(
             request, "results/search_between_date.html", {"object_list": selected_chats}
         )
+    else:
+        messages.warning(
+                request, "There should be a valid End_date and Start_Date"
+            )
     return render(request, "results/search_between_date.html", {"object_list": None})
 
 

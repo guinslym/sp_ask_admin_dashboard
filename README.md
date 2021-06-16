@@ -60,5 +60,6 @@ open your browser on http://127.0.0.1:8000/
  - Amy (LibraryH3lp)
  - Dan S (Laurentian U)
  - Aleksandra (Carleton)
+ - Erik R (Western)
  - Bart K (Scholars-Portal)
  - Sabina P (Scholars-Portal)

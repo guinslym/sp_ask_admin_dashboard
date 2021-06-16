@@ -68,8 +68,8 @@ var fas = flatpickr(".end_date", {
                                                     <tr>
                                                         <th>#</th>
                                                         <th>Guest</th>
-                                                        <th>Started</th>
-                                                        <th>From Queue</th>
+                                                        <th>Started (YYYY-MM-DD)</th>
+                                                        <th>Queue</th>
                                                         <th>Operator</th>
                                                         <th>Ended</th>
                                                         <th>Transcript</th>
@@ -88,12 +88,14 @@ var fas = flatpickr(".end_date", {
                                                             </a>
                                                         </td>
                                                         <td>
-                                                            <a href="{% url  'search_chats_within_2_hours' start_date=value.started  %}">{{value.started}}</a>
+                                                            {% if value.started %}
+                                                                {{ value.started}} 
+                                                            {% endif %}
                                                         </td>
                                                         <td><a href="{% url  'get_chats_from_this_queue_using_only_the_queue_name' value.queue  %}">{{value.queue}}</a>  </td>
                                                         <td>
                                                             {% if value.operator %}
-                                                                <a href="">{{value.operator}}</a>
+                                                                <a href="{% url  'get_chats_for_this_user' username=value.operator %}">{{value.operator}}</a>
                                                             {% endif %}
                                                         </td>
 
