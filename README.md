@@ -2,7 +2,8 @@
 Sp Ask DashBoard
 ======================================================
 
-Yet Another LibraryH3lp Ask Dashboard
+  - Yet Another LibraryH3lp Dashboard
+  - This is not intended to replace the LH3 Dashboard but to supplement is by adding other features or reports.
 
 
 ## Screenshots
