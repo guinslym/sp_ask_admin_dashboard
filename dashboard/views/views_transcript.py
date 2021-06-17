@@ -114,6 +114,6 @@ def search_transcript_that_was_transferred(request, *args, **kwargs):
     chats = [Chats(chat) for chat in chats]
     return render(
         request,
-        "results/search_in_transcript.html",
+        "results/chat_transferred.html",
         {"object_list": chats, "guest_id": "fake GuestID"},
     )

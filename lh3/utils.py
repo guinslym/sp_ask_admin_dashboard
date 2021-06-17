@@ -9,10 +9,11 @@ except:
 
 import re
 
+__authors__='Amy - Libraryh3lp'
+
 # Example...
 
 content_range_pattern = re.compile(r"chats (\d+)-(\d+)\/(\d+)")
-
 
 def extract_content_range(content_range):
     matches = content_range_pattern.match(content_range)
@@ -21,13 +22,12 @@ def extract_content_range(content_range):
     total = matches.group(3)
     return (begin, end, total)
 
-
 def search_chats(client, query, chat_range):
     begin, end = chat_range
     try:
         _, x_api_version = lh3.api._API.versions.get("v4")
     except:
-        _, x_api_version = _API.versions.get("v4")
+        _, x_api_version = client._API.versions.get("v4")
     headers = {
         "Content-Type": "application/json",
         "Range": "chats {begin}-{end}",
@@ -41,21 +41,3 @@ def search_chats(client, query, chat_range):
     chats = client.api()._maybe_json(response)
     content_range = extract_content_range(response.headers["Content-Range"])
     return chats, content_range
-
-
-"""
-# Query chats on a specific queue for a date range.
-query = {
-    'query': {
-        'queue': ['western'],
-        'from': '2021-01-01',
-        'to': '2021-05-19'
-    },
-    'sort': [
-        {'started': 'descending'}
-    ]
-}
-chats, content_range = search_chats(client, query, chat_range=(0, 100))
-results_begin, results_end, results_total = content_range
-
-"""
