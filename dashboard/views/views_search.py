@@ -660,7 +660,7 @@ def get_chat_for_date_range(request, *args, **kwargs):
         )
     else:
         messages.warning(
-                request, "There should be a valid End_date and Start_Date"
+                request, "There should be a valid Start_Date and End_date"
             )
     return render(request, "results/search_between_date.html", {"object_list": None})
 

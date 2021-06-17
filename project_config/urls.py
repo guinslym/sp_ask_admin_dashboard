@@ -94,17 +94,11 @@ from dashboard.views.views_search import (
     get_chats_from_yesterday_from_mentees,
     get_chat_for_date_range,
     search_chats_with_this_guestID,
-    SearchGuestResultsView,
     search_chats_within_2_hours,
     get_chats_from_yesterday_sample_size,
 )
 
 urlpatterns += [
-    path(
-        "search/chats/with/this/guestID/<str:guest_id>",
-        SearchGuestResultsView.as_view(),
-        name="results_chats_with_this_guestID",
-    ),
     path(
         "search/chats/with/this/guestID/",
         search_chats_with_this_guestID,
