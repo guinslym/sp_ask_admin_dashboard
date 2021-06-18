@@ -87,3 +87,26 @@ def get_this_profile(request, *args, **kwargs):
         "results/profile.html",
         {"queues": queues, "title": title, "profile": profile},
     )
+
+class SearchFAQResultsView(TemplateView):
+    """[summary]
+
+    Args:
+        TemplateView ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
+    template_name = "results/profile.html"
+
+    @csrf_exempt
+    def get_context_data(self, **kwargs):
+        context = super(SearchFAQResultsView, self).get_context_data(**kwargs)
+        context["title"] = "FAQ"
+        search_value = self.request.GET.get("faq_id")
+
+        client = Client()
+        context['response'] = client.one('faqs', search_value).all('questions')
+        context["faqs"] = client.all("faqs").get_list()
+
+        return context

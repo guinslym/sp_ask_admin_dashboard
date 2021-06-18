@@ -85,13 +85,28 @@ urlpatterns += [
     path("homepage/chart/", get_data_for_chart, name="get_data_for_chart"),
 ]
 
+#PROFILES AND FAQs
+from dashboard.views.views_profiles_and_faqs import (
+    get_this_profile,
+    SearchProfileResultsView,
+    SearchFAQResultsView,
+)
 
+urlpatterns += [
+    
+    path("search/profiles/<str:queue_id>", get_this_profile, name="get_this_profile"),
+    path(
+        "results/Profiles/", SearchProfileResultsView.as_view(), name="results_profiles"
+    ),
+    path(
+        "results/FAQs", SearchFAQResultsView.as_view(), name="results_faqs"
+    ),
+]
 # SEARCH
 from dashboard.views.views_search import (
     get_chats_for_this_user,
     get_chats_for_this_queue,
-    get_this_profile,
-    SearchProfileResultsView,
+
     get_chats_from_yesterday,
     get_chats_from_yesterday_from_mentees,
     get_chat_for_date_range,
@@ -120,10 +135,6 @@ urlpatterns += [
         "search/queues/<str:queue_name>",
         get_chats_for_this_queue,
         name="get_chats_for_this_queue",
-    ),
-    path("search/profiles/<str:queue_id>", get_this_profile, name="get_this_profile"),
-    path(
-        "resultsProfiles/", SearchProfileResultsView.as_view(), name="results_profiles"
     ),
     path("yesterday/", get_chats_from_yesterday, name="get_chats_from_yesterday"),
     path(
