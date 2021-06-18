@@ -7,10 +7,14 @@ from dashboard.utils.utils import (
     retrieve_transcript,
     search_chats,
 )
+from django.contrib import messages
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
-
+import requests
+from pprint import pprint as print
+from dateutil.parser import parse
+from operator import itemgetter
 
 class SearchProfileResultsView(TemplateView):
     """[summary]
@@ -106,9 +110,37 @@ class SearchFAQResultsView(TemplateView):
         search_value = self.request.GET.get("faq_id")
 
         client = Client()
-        info = client.one('faqs', search_value).all('questions')
-        context['response'] = info.get_list()
         context["faqs"] = client.all("faqs").get_list()
-        context['title'] = "anonyme"
+        info = client.one('faqs', search_value).all('questions')
+        try:
+            context['response'] = info.get_list()
+            question_response = list()
+            for question in info.get_list():
+                this_id = question.get('id')
+                #TODO order question by Date
+                if question.get("question", None):
+                    likes = question.get('likes')
+                    dislikes = question.get('dislikes')
+                    views = question.get('views')
+                    published = str(question.get('published'))
+                    updated = parse(question.get('updatedAt'))
 
-        return context
+                    question = question.get('question')
+                    answer = client.one('faqs', search_value).one('questions', id=this_id).get().get('answer')
+                    question_response.append(
+                        {"question":question, "answer":answer, 
+                        "likes":likes, "dislikes":dislikes, "views":views,
+                        "updated":updated, "published":published
+                        }
+                    )
+            context['title'] = client.one('faqs', search_value).get().get('name')
+            context['question'] = client.one('faqs', search_value).one('questions', id=591).get().get('answer')
+            question_response.sort(key=itemgetter('updated'), reverse=True)
+            context['results']=   question_response
+            if len(question_response) ==0:
+                messages.add_message(self.request, messages.WARNING, "This FAQ doesn't contain any questions")
+            return context
+        except:
+            messages.add_message(self.request, messages.WARNING, 'An error occured. Please verify the FAQ ID')
+            context["faqs"] = client.all("faqs").get_list()
+            return context
