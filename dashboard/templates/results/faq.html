@@ -37,20 +37,27 @@
 </div>
 
 
-{% for entry in response %}
                         <div class="row">
                             <div class="col-lg-12">
+                              {{title}}
+
                                 <div class="card">
+                                  {% for entry in response %}
                                     <div class="card-body">
-                                    <h4 class="card-title">{{entry.question|upper}}</h4>
-                                    <p><a href="" target="_blank">Open in a new tab <i class="fas fa-external-link-alt"></i> </a></p>
+                                    <h4 class="card-title">
+                                      <a href="{{entry.id}}" target="_blank">{{entry.question|upper}}</a>
+                                    </h4>
+                                    <p><i class="ri-download-line">&nbsp;{{entry.views}}</i>&nbsp;<i class="ri-timer-line">&nbsp;{{entry.likes}}</i>
+                                      </p>
                                     <hr/>
         
                                     </div>
+                                    {% endfor %}
                                 </div>
+                                
                             </div>
                         </div>
-                        {% endfor %}
+                       
 
 
 {% endblock %}

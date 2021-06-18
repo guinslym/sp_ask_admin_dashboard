@@ -97,7 +97,7 @@ class SearchFAQResultsView(TemplateView):
     Returns:
         [type]: [description]
     """
-    template_name = "results/profile.html"
+    template_name = "results/faq.html"
 
     @csrf_exempt
     def get_context_data(self, **kwargs):
@@ -106,7 +106,9 @@ class SearchFAQResultsView(TemplateView):
         search_value = self.request.GET.get("faq_id")
 
         client = Client()
-        context['response'] = client.one('faqs', search_value).all('questions')
+        info = client.one('faqs', search_value).all('questions')
+        context['response'] = info.get_list()
         context["faqs"] = client.all("faqs").get_list()
+        context['title'] = "anonyme"
 
         return context
