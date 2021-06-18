@@ -20,6 +20,7 @@ from dashboard.views.views_api import (
     get_users,
     get_queues,
     get_profiles,
+    get_faqs,
 )
 
 # API
@@ -27,6 +28,7 @@ urlpatterns = [
     path("users/", get_users, name="get_list_of_users"),
     path("queues/", get_queues, name="get_list_of_queues"),
     path("profiles/", get_profiles, name="get_list_of_profiles"),
+    path("faqs/", get_faqs, name="get_list_of_faqs"),
 ]
 
 # ASSIGNEE

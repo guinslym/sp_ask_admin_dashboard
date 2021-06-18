@@ -96,7 +96,9 @@ local_settings.py
 
 .env
 env37
+env38
 db.sqlite3
 poetry.lock
 ./poetry.lock
+to_delete/
 

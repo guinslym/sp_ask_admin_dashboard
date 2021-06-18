@@ -70,4 +70,43 @@ def get_profiles(request, *args, **kwargs):
     )
 
 
+
+def get_faqs(request, *args, **kwargs):
+    faq_id = kwargs.get("faq_id", None)
+    client = Client()
+    queues = client.all("faqs").get_list()
+    title = "FAQ"
+    faq = None
+    if request.method == "GET":
+        if request.is_ajax():
+            return JsonResponse(faq, safe=False)
+        return render(
+            request,
+            "results/faq.html",
+            {"queues": queues, "title": title, "faq": faq},
+        )
+    if faq_id:
+        faq = client.one("faqs", int(faq_id)).get()
+        faq = faq["content"]
+        title = faq["name"]
+        standalone_link = (
+            "https://ca.libraryh3lp.com/dashboard/faqs/"
+            + str(int(faq_id))
+            + "?standalone=true"
+        )
+
+        if request.is_ajax():
+            return JsonResponse(faq, safe=False)
+        return render(
+            request,
+            "results/faq.html",
+            {"faq": faq, "title": title, "standalone_link": standalone_link},
+        )
+    if request.is_ajax():
+        return JsonResponse(queues, safe=False)
+    return render(
+        request,
+        "results/faq.html",
+        {"queues": queues, "title": title, "faq": faq},
+    )
 # TODO clean template html remove console error.
