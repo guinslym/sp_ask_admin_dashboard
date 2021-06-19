@@ -14,17 +14,16 @@
               <!-- <p class="card-title-desc">Set heights using classes like <code>.form-control-lg</code> and <code>.form-control-sm</code>.</p> -->
               <div>
                 <div class="mb-4">
+                  <div class="form-group">
                   <form action="{% url 'results_profiles' %}" method="get" >
 
                     <select class="form-control" name="queue_id" onchange="this.form.submit()">
-                      <option value="none" selected disabled hidden> 
-                        Select a Profile 
-                    </option>
+                    <option>Select a Profile </option>
                       {% for entry in queues %}
                           <option value="{{ entry.id|safe }}"  >{{ entry.name }}</option>
                       {% endfor %}
                   </select>
-
+                </div>
                 </div>
                 <div class="mb-4 text-right" >
                     <input type="submit" value="Search" name="first_button" class="btn btn-primary waves-effect waves-light">
@@ -55,4 +54,8 @@
 
 
                     {% endif %}
+{% endblock %}
+
+{% block jscript %}
+
 {% endblock %}

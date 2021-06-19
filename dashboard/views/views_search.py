@@ -191,7 +191,7 @@ def get_chats_from_this_queue_for_this_year_using_only_the_queue_name(
         "sort": [{"started": "descending"}],
     }
     queue_chats, content_range = search_chats(
-            client, query, chat_range=(0, 10000)
+            client, query, chat_range=(0, 500)
         )
     # breakpoint()
     chats = soft_anonimyzation(queue_chats)
@@ -251,7 +251,7 @@ def get_chats_for_this_user(request, username):
         "sort": [{"started": "descending"}],
     }
     chats_from_users, content_range = search_chats(
-            client, query, chat_range=(0, 10000)
+            client, query, chat_range=(0, 500)
         )
     chats = soft_anonimyzation(chats_from_users)
 
