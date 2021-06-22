@@ -20,7 +20,9 @@ from pprint import pprint as print
 
 from datetime import datetime, timedelta
 import lh3.api
-
+from dashboard.utils.ask_schools import (
+    find_school_by_queue_or_profile_name,
+)
 
 def download_in_xslx_report__for_queues_for_this_year(request):
     # https://gitlab.com/libraryh3lp/libraryh3lp-sdk-python/-/blob/master/examples/scheduled-reports.py
@@ -216,3 +218,41 @@ def pivotTableChatAnsweredByOperator(request):
     queues = [chat.get("queue") for chat in chats]
     context = {"schools": chats_initital}
     return render(request, "pivot.html", context)
+
+
+def pivot_table_chats_per_schools(request):
+    today = datetime.today()
+    query = {
+    "query": {
+        "from": str(today.year)+"-06-21", 
+        "to": str(today.year)+"-06-21"
+        },
+        "sort": [{"started": "descending"}],
+    }
+    client = Client()
+    chats = client.api().post("v4", "/chat/_search", json=query)
+
+    my_list = list()
+
+    for chat in chats:
+        accepted ='not answered'
+        this_date = 'None'
+        school = 'None'
+        operator = 'None'
+        if chat.get('accepted'):
+            accepted = 'answered'
+        if chat.get('queue'):
+            school = find_school_by_queue_or_profile_name(chat.get('queue'))
+        if chat.get('operator'):
+            operator = chat.get('operator')
+        try:
+            if chat.get('started', 'None'):
+                this_date = chat.get('started').split('T')[0]
+        except:
+            pass
+        my_list.append({'accepted':accepted, 'this_date':this_date, 
+                        'school':school, 'operator':operator, 'this_date':this_date,
+                        'queue':chat.get('queue')})
+    my_second_list = list()
+    
+    return render(request, "pivot/chats_per_school.html", {"object_list": my_list})

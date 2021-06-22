@@ -645,4 +645,3 @@ def search_chats_with_this_guestID(request, *args, **kwargs):
 class SearchGuestResultsView(TemplateView):
     template_name = "results/search_guest.html"
 
-

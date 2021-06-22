@@ -169,9 +169,15 @@ from dashboard.views.views_report import (
     daily_report,
     chord_diagram,
     download_in_xslx_report_for_this_year,
+    pivot_table_chats_per_schools,
 )
 
 urlpatterns += [
+    path(
+        "pivot/table/report/chat/per/school",
+        pivot_table_chats_per_schools,
+        name="pivot_table_chats_per_schools",
+    ),
     path(
         "download/operator/report/for/this/year",
         download_in_xslx_report_for_this_year,
