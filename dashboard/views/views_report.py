@@ -224,7 +224,7 @@ def pivot_table_chats_per_schools(request):
     today = datetime.today()
     query = {
     "query": {
-        "from": str(today.year)+"-06-21", 
+        "from": str(today.year)+"-06-19", 
         "to": str(today.year)+"-06-21"
         },
         "sort": [{"started": "descending"}],
@@ -251,8 +251,9 @@ def pivot_table_chats_per_schools(request):
         except:
             pass
         my_list.append({'accepted':accepted, 'this_date':this_date, 
-                        'school':school, 'operator':operator, 'this_date':this_date,
+                        'school':school, 'operator':operator, 'date':this_date,
                         'queue':chat.get('queue')})
     my_second_list = list()
+    print(my_list)
     
     return render(request, "pivot/chats_per_school.html", {"object_list": my_list})
