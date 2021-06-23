@@ -1,15 +1,26 @@
 from django.http import Http404
 
 # Create your views here.
-from django.http import HttpResponse, HttpResponseNotFound
 from django.http import JsonResponse
 from django.shortcuts import render
 
-import datetime
+from datetime import datetime
 
 from lh3.api import *
 from dashboard.utils import utils
-
+import pandas as pd
+from os import path
+import pathlib
+from project_config.settings import BASE_DIR
+from django.http import FileResponse
+from dashboard.utils.ask_schools import (
+    find_school_by_operator_suffix,
+    find_queues_from_a_school_name,
+    find_school_by_queue_or_profile_name,
+)
+from uuid import uuid4
+import os
+from tempfile import gettempdir
 
 def get_users(request):
     client = Client()
@@ -18,6 +29,32 @@ def get_users(request):
     if request.is_ajax():
         return JsonResponse(users, safe=False)
     return render(request, "results/operators.html", {"object_list": users})
+
+def download_get_users(request):
+    client = Client()
+    client.set_options(version="v1")
+    users = client.all("users").get_list()
+    df = pd.DataFrame(users)
+    df['school'] = df['name'].apply(lambda x: find_school_by_operator_suffix(x))
+    del df['id']
+    del df['type']
+    del df['email']
+    del df['show']
+    del df['status']
+
+    today = datetime.today().strftime("%Y-%m-%d-%H:%M")
+
+    tmp = os.path.join(gettempdir(), '.{}'.format(hash(os.times())))
+    os.makedirs(tmp)
+
+    filename = "operators_" + today +".xlsx"
+    filepath = str(pathlib.PurePath(tmp, filename))
+
+    writer = pd.ExcelWriter(filepath, engine="xlsxwriter")
+    df.to_excel(writer, index=False)
+    writer.save()
+
+    return FileResponse(open(filepath, "rb"), as_attachment=True, filename=filename)
 
 
 def get_queues(request):
@@ -28,6 +65,36 @@ def get_queues(request):
         return JsonResponse(queues, safe=False)
     return render(request, "results/queues.html", {"object_list": queues})
     # path('queues/', GetListOfQueues.as_view(), name='Get list of Queues'),
+
+def download_get_queues(request):
+    client = Client()
+    client.set_options(version="v1")
+    queues = client.all("queues").get_list()
+    df = pd.DataFrame(queues)
+    df['school'] = df['name'].apply(lambda x: find_school_by_queue_or_profile_name(x))
+    del df['transcripts']
+    del df['type']
+    del df['email']
+    del df['avatar']
+    #del df['id']
+    del df['show']
+    del df['status']
+
+    today = datetime.today().strftime("%Y-%m-%d-%H:%M")
+
+    tmp = os.path.join(gettempdir(), '.{}'.format(hash(os.times())))
+    os.makedirs(tmp)
+
+    filename = "queues_" + today +".xlsx"
+    filepath = str(pathlib.PurePath(tmp, filename))
+
+    writer = pd.ExcelWriter(filepath, engine="xlsxwriter")
+    df.to_excel(writer, index=False)
+    writer.save()
+
+    return FileResponse(open(filepath, "rb"), as_attachment=True, filename=filename)
+
+
 
 
 def get_profiles(request, *args, **kwargs):

@@ -536,6 +536,26 @@ def get_chats_from_yesterday_sample_size(request, *args, **kwargs):
         },
     )
 
+import os
+from tempfile import gettempdir
+from pathlib import Path
+import pandas as pd
+import pathlib
+import random
+from django.http import FileResponse
+from shutil import rmtree
+
+def download_get_chat_for_date_range(request, *args, **kwargs):
+    filename = kwargs.get("filename", "")
+    tmp_folder_name = kwargs.get("tmp_folder_name", "")
+    if filename:
+        tmp = os.path.join(gettempdir(), '.{}'.format(hash(int(tmp_folder_name))))
+        filepath = str(pathlib.PurePath(tmp, filename))
+        return FileResponse(open(filepath, "rb"), as_attachment=True, filename=filename)
+    else:
+        raise Http404()
+
+
 
 def get_chat_for_date_range(request, *args, **kwargs):
     start_date = request.GET.get("start_date", "")
@@ -570,7 +590,40 @@ def get_chat_for_date_range(request, *args, **kwargs):
             to=to_date,
         )
 
-        # return JsonResponse(chats, safe=False)
+        #Tmp save the chats list        
+        df = pd.DataFrame(all_chats)
+        del df['tags']
+        del df['referrer']
+        del df['id']
+        del df['profile']
+        del df['desktracker_id']
+        del df['reftracker_url']
+        del df['ip']
+        del df['reftracker_id']
+        del df['desktracker_url']
+        df['school_from_operator_username'] = df['operator'].apply(lambda x: find_school_by_operator_suffix(x))
+        df['school_from_queue_name'] = df['queue'].apply(lambda x: find_school_by_queue_or_profile_name(x))
+        df['guest'] = df['guest'].apply(lambda x: x.split('@')[0][0:8])
+        
+        today = datetime.today().strftime("%Y-%m-%d-%H:%M")
+
+        tmp_folder_name ='4564565464321'
+        rmtree(tmp_folder_name, ignore_errors=True)
+        tmp = os.path.join(gettempdir(), '.{}'.format(hash(4564565464321)))
+        try:
+            os.makedirs(tmp)
+        except:
+            pass
+
+        filename = "list_of_chats_from_date_range_results_" + str(random.randint(1,7000))+".xlsx"
+        filepath = str(pathlib.PurePath(tmp, filename))
+
+        writer = pd.ExcelWriter(filepath, engine="xlsxwriter")
+        df.to_excel(writer, index=False)
+        writer.save()
+
+        # Continue
+
         chats = [Chats(chat) for chat in all_chats]
         selected_chats = list()
         for chat in chats:
@@ -581,7 +634,10 @@ def get_chat_for_date_range(request, *args, **kwargs):
                 except:
                     selected_chats.append(chat)
         return render(
-            request, "results/search_between_date.html", {"object_list": selected_chats}
+            request, "results/search_between_date.html", {
+                            "object_list": selected_chats, 
+                            "filename":filename,
+                            "tmp_folder_name":tmp_folder_name}
         )
     else:
         messages.warning(

@@ -9,8 +9,18 @@ from django.contrib import messages
 import requests
 import json
 from pprint import pprint as print
+import pandas as pd
+from django.http import FileResponse
+import pathlib
+
+from dashboard.utils.ask_schools import (
+    find_school_by_operator_suffix,
+    find_queues_from_a_school_name,
+    find_school_by_queue_or_profile_name,
+)
 
 import os
+from tempfile import gettempdir
 from pathlib import Path
 
 
@@ -99,6 +109,45 @@ def get_homepage(request, *args, **kwargs):
             "this_year": today.year,
         },
     )
+
+
+def download_list_of_chats_on_homepage(request):
+
+    today = datetime.today()
+    last2Days = today - timedelta(days=2)
+
+    client = Client()
+    chats = client.chats()
+    to_date = (
+        str(today.year) + "-" + "{:02d}".format(today.month) + "-" + str(today.day)
+    )
+    chats = chats.list_day(
+        year=last2Days.year, month=last2Days.month, day=last2Days.day, to=to_date
+    )
+
+    chats = soft_anonimyzation(chats)
+    df = pd.DataFrame(chats)
+    del df['tags']
+    del df['referrer']
+    del df['id']
+    del df['profile']
+    df['school_from_operator_username'] = df['operator'].apply(lambda x: find_school_by_operator_suffix(x))
+    df['school_from_queue_name'] = df['queue'].apply(lambda x: find_school_by_queue_or_profile_name(x))
+    df['guest'] = df['guest'].apply(lambda x: x.split('@')[0][0:8])
+    
+    today = datetime.today().strftime("%Y-%m-%d-%H:%M")
+
+    tmp = os.path.join(gettempdir(), '.{}'.format(hash(os.times())))
+    os.makedirs(tmp)
+
+    filename = "list_of_chats_from_homepage_" + today +".xlsx"
+    filepath = str(pathlib.PurePath(tmp, filename))
+
+    writer = pd.ExcelWriter(filepath, engine="xlsxwriter")
+    df.to_excel(writer, index=False)
+    writer.save()
+
+    return FileResponse(open(filepath, "rb"), as_attachment=True, filename=filename)
 
 
 def service_web(request):

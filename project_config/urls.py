@@ -18,7 +18,9 @@ from django.urls import re_path
 
 from dashboard.views.views_api import (
     get_users,
+    download_get_users,
     get_queues,
+    download_get_queues,
     get_profiles,
     get_faqs,
 )
@@ -26,7 +28,9 @@ from dashboard.views.views_api import (
 # API
 urlpatterns = [
     path("users/", get_users, name="get_list_of_users"),
+    path("download/list/of/operators/", download_get_users, name="download_get_users"),
     path("queues/", get_queues, name="get_list_of_queues"),
+    path("download/list/of/queues/", download_get_queues, name="download_get_queues"),
     path("profiles/", get_profiles, name="get_list_of_profiles"),
     path("faqs/", get_faqs, name="get_list_of_faqs"),
 ]
@@ -57,9 +61,15 @@ from dashboard.views.views_homepage import (
     service_sms,
     get_data_for_chart,
     get_data_for_users_currently_online_table,
+    download_list_of_chats_on_homepage,
 )
 
 urlpatterns += [
+    path(
+        "downloads/list/of/chats/on/homepage/",
+        download_list_of_chats_on_homepage,
+        name="download_list_of_chats_on_homepage",
+    ),
     path(
         "get_table/",
         get_data_for_users_currently_online_table,
@@ -106,7 +116,7 @@ urlpatterns += [
 from dashboard.views.views_search import (
     get_chats_for_this_user,
     get_chats_for_this_queue,
-
+    download_get_chat_for_date_range,
     get_chats_from_yesterday,
     get_chats_from_yesterday_from_mentees,
     get_chat_for_date_range,
@@ -116,6 +126,11 @@ from dashboard.views.views_search import (
 )
 
 urlpatterns += [
+    path(
+        "download/chats/with/this/date_range/<str:filename>/<str:tmp_folder_name>",
+        download_get_chat_for_date_range,
+        name="download_get_chat_for_date_range",
+    ),
     path(
         "search/chats/with/this/guestID/",
         search_chats_with_this_guestID,

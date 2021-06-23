@@ -59,7 +59,12 @@ var fas = flatpickr(".end_date", {
                                         <h4 class="card-title">Total chats: {{ object_list|length }} 
                                         </h4>
                                         <p class="card-title-desc">
-                                            
+                                            {% if filename %}
+                                                <a href="{% url 'download_get_chat_for_date_range' filename tmp_folder_name %}" class="btn btn-sm btn-primary">
+                                                    <i class="ri-download-line"></i>&nbsp;Download
+                                                </a>
+                                                {{filepath}}
+                                            {% endif %}
                                         </p>
         
                                         <div class="table-responsive">
