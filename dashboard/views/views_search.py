@@ -691,10 +691,18 @@ def search_chats_with_this_guestID(request, *args, **kwargs):
         chats = client.api().post("v4", "/chat/_search", json=query)
         chats = soft_anonimyzation(chats)
         chats = [Chats(chat) for chat in chats]
+        if request.is_ajax():
+            return JsonResponse(
+                {"object_list": chats, "guest_id": guest_id}
+            )
         return render(
             request,
             "results/search_guest.html",
             {"object_list": chats, "guest_id": guest_id},
+        )
+    if request.is_ajax():
+        return JsonResponse(
+            {"object_list": None}
         )
     return render(request, "results/search_guest.html", {"object_list": None})
 
