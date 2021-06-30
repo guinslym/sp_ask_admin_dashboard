@@ -249,6 +249,7 @@ from dashboard.views.views_transcript import (
     download_transcript_in_html,
     search_transcript_with_this_keyword,
     search_transcript_that_was_transferred,
+    search_transcript_that_contains_file_transfer,
 )
 
 urlpatterns += [
@@ -261,6 +262,11 @@ urlpatterns += [
         "search/transcripts/that/was/transferred/",
         search_transcript_that_was_transferred,
         name="search_transcript_that_was_transferred",
+    ),
+    path(
+        "search/transcripts/that/contains/file/transfer/",
+        search_transcript_that_contains_file_transfer,
+        name="search_transcript_that_contains_file_transfer",
     ),
     path(
         "search/transcripts/containing/this/keyword/",

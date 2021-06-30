@@ -117,3 +117,23 @@ def search_transcript_that_was_transferred(request, *args, **kwargs):
         "results/chat_transferred.html",
         {"object_list": chats, "guest_id": "fake GuestID"},
     )
+
+@csrf_exempt
+def search_transcript_that_contains_file_transfer(request, *args, **kwargs):
+    query = {
+        "query": {
+            "transcript": ['System message: download from'],
+        },
+        "sort": [{"started": "descending"}],
+    }
+    client = Client()
+    chats, content_range = search_chats(
+            client, query, chat_range=(0, 100)
+        )
+    chats = soft_anonimyzation(chats)
+    chats = [Chats(chat) for chat in chats]
+    return render(
+        request,
+        "results/chat_with_file_transfer.html",
+        {"object_list": chats, "guest_id": "fake GuestID"},
+    )
